@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>To-Do App</title>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+		<style>
+			/* Custom style for checkbox */
+			.completed {
+				text-decoration: line-through;
+			}
+		</style>
+  	</head>
+	<body>
+		<div class="container mt-5">
+			<h1 class="text-center">To-Do List</h1>
+			<div class="input-group mb-3">
+				<input type="text" id="taskInput" class="form-control" placeholder="Add a new task" aria-label="Task"/>
+				<div class="input-group-append">
+					<button class="btn btn-primary" id="addTaskBtn">Add Task</button>
+				</div>
+			</div>
+			<ul class="list-group" id="taskList">
+				<li class="list-group-item d-flex align-items-center justify-content-between">
+					<input type="checkbox" class="mr-2" />
+					<p class="taskName mb-0">Sample Task</p>
+					<div>
+						<button class="btn btn-warning btn-sm edit-button">Edit</button>
+						<button class="btn btn-danger btn-sm ml-2 delete-button">Delete</button>
+					</div>
+				</li>
+			</ul>
+		</div>
+    	<script src="script.js"></script>
+  	</body>
+</html>
