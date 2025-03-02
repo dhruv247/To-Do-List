@@ -1,5 +1,13 @@
-// Load tasks from localStorage when the page loads
-document.addEventListener("DOMContentLoaded", loadTasks);
+let currentUser;
+
+async function hashPassword(password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+}
 
 // Function to validate task name
 function validTaskName(taskName) {
@@ -16,22 +24,99 @@ function validTaskName(taskName) {
     return null;
 }
 
-// Function to save tasks to localStorage
-function saveTasks() {
-    let tasks = [];
-    document.querySelectorAll('#taskList li').forEach(task => {
-        tasks.push({
-            name: task.querySelector('.taskName').textContent,
-            completed: task.querySelector('input[type="checkbox"]').checked
-        });
-    });
-    localStorage.setItem("tasks", JSON.stringify(tasks));
+function clearLoginRegister() {
+    document.querySelector("#loginInput").value = "";
+    document.querySelector("#passwordInput").value = "";
 }
 
-// Function to load tasks from localStorage
-function loadTasks() {
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    tasks.forEach(task => {
+async function loginRegister() {
+    let emailFormat = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    let username = document.querySelector("#loginInput").value;
+    let password = document.querySelector("#passwordInput").value;
+
+    // userList = [
+    //     {username: "dhruv@gmail.com", password: await hashPassword("dhruv")}, 
+    //     {username: "raj@gmail.com", password: await hashPassword("raj")}, 
+    // ]
+    // localStorage.setItem("users", JSON.stringify(userList))
+
+    // taskLists = [
+    //     {
+    //         username: "dhruv@gmail.com", tasks: [
+    //             {
+    //                 name: "sample1",
+    //                 completed: false
+    //             },
+    //             {
+    //                 name: "sample2",
+    //                 completed: true
+    //             }
+    //         ]
+    //     },
+    //     {
+    //         username: "raj@gmail.com", tasks: [
+    //             {
+    //                 name: "sample1",
+    //                 completed: true
+    //             },
+    //             {
+    //                 name: "sample2",
+    //                 completed: false
+    //             }
+    //         ]
+    //     }
+    // ]
+    // localStorage.setItem("taskLists", JSON.stringify(taskLists))
+
+    try {
+        if (!username || !password) {
+            throw new Error("Password and Username cannot be empty! Please enter a user name and password");
+        }
+        else if (emailFormat.test(username) === false) {
+            throw new Error("Email is in incorrect format! Please check and enter your email again.");
+        }
+        else {
+            let storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+            let storedTasksLists = JSON.parse(localStorage.getItem("taskLists")) || [];
+            let userFound = false;
+            const hashedPassword = await hashPassword(password);
+            
+            for (let user of storedUsers) {
+                if (username === user.username) {
+                    userFound = true;
+                    if (hashedPassword === user.password) {
+                        clearLoginRegister();
+                        return username;
+                    }
+                    else {
+                        clearLoginRegister();
+                        throw new Error("Incorrect password for " + username + "! Please try again.");
+                    }
+                }
+            }
+            if (!userFound) {
+                newUser = { username: username, password: hashedPassword };
+                storedUsers.push(newUser);
+                localStorage.setItem("users", JSON.stringify(storedUsers))
+                newTaskList = { username: username, tasks: [] };
+                storedTasksLists.push(newTaskList);
+                localStorage.setItem("taskLists", JSON.stringify(storedTasksLists));
+                clearLoginRegister();
+                alert(username + " has been registered successfully!")
+                return username;
+            }
+        }
+    } catch (error) {
+        alert("Error: " + error.message);
+        clearLoginRegister();
+        return null; // Explicitly return null on error
+    }
+}
+
+function loadTasks(user) {
+    let taskLists = JSON.parse(localStorage.getItem("taskLists"));
+    let userTaskList = taskLists.find(list => list.username === user).tasks;
+    userTaskList.forEach(task => {
         let newTask = document.createElement('li');
         newTask.className = `list-group-item d-flex justify-content-between align-items-center`;
         newTask.innerHTML = `<input type="checkbox" class="mr-2" ${task.completed ? "checked" : ""}/>
@@ -42,6 +127,28 @@ function loadTasks() {
                             </div>`;
         taskList.appendChild(newTask);
     });
+    
+}
+
+function saveTasks() {
+    let tasks = [];
+    document.querySelectorAll('#taskList li').forEach((task) => {
+        tasks.push({
+            name: task.querySelector('.taskName').textContent,
+            completed: task.querySelector('input[type="checkbox"]').checked
+        });
+    });
+    
+    // Get current taskLists from localStorage
+    let taskLists = JSON.parse(localStorage.getItem("taskLists"));
+    
+    // Find and update the current user's tasks
+    let userTaskList = taskLists.find(list => list.username === currentUser);
+    if (userTaskList) {
+        userTaskList.tasks = tasks;
+        // Save updated taskLists back to localStorage
+        localStorage.setItem("taskLists", JSON.stringify(taskLists));
+    }
 }
 
 // Function to add a new task
@@ -111,7 +218,15 @@ function taskDone(event) {
     }
 }
 
-// Event Listeners
+document.querySelector("#loginRegisterBtn").addEventListener("click", async () => {
+    currentUser = await loginRegister();
+    if (currentUser) {
+        alert(currentUser + " has logged in successfully!")
+        document.querySelector("#loginSection").classList.add("d-none");
+        document.querySelector("#toDoSection").classList.remove("d-none");
+        loadTasks(currentUser)
+    }
+});
 document.querySelector('#addTaskBtn').addEventListener('click', addTask);
 document.querySelector('#taskList').addEventListener('click', deleteTask);
 document.querySelector('#taskList').addEventListener('click', editTask);

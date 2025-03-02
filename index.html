@@ -1,38 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-  	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>To-Do App</title>
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
-		<style>
-			/* Custom style for checkbox */
-			.completed {
-				text-decoration: line-through;
-			}
-		</style>
-  	</head>
-	<body>
-		<div class="container mt-5">
-			<h1 class="text-center">To-Do List</h1>
-			<div class="input-group mb-3">
-				<input type="text" id="taskInput" class="form-control" placeholder="Add a new task" aria-label="Task"/>
-				<div class="input-group-append">
-					<button class="btn btn-primary" id="addTaskBtn">Add Task</button>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>To-List App</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+    </head>
+    <body class="h-100">
+        <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+            <div class="border rounded p-4" id="loginSection">
+                <h1 class="text-center mb-2">To-Do List</h1>
+                <div class="d-flex flex-column">
+                    <input type="text" id="loginInput" class="form-control mb-2" placeholder="Email" aria-label="Task"/>
+                    <input type="password" id="passwordInput" class="form-control mb-2" placeholder="Password" aria-label="Task"/>
+                    <button class="btn btn-success" id="loginRegisterBtn">Login / Register</button>
+                </div>
+            </div>
+            <!-- To-Do List Section (Initially Hidden) -->			
+			<div id ="toDoSection" class="d-none">
+				<h1 class="text-center">To-Do List</h1>
+				<div class="input-group mb-3">
+					<input type="text" id="taskInput" class="form-control" placeholder="Add a new task" aria-label="Task"/>
+					<button class="btn btn-primary ml-4" id="addTaskBtn">Add Task</button>
 				</div>
+				<ul class="list-group" id="taskList">
+					<!-- Sample Task -->
+					<!-- <li class="list-group-item d-flex align-items-center justify-content-between">
+						<input type="checkbox" class="mr-2" />
+						<p class="taskName mb-0">Sample Task</p>
+						<div>
+							<button class="btn btn-warning btn-sm edit-button">Edit</button>
+							<button class="btn btn-danger btn-sm ml-2 delete-button">Delete</button>
+						</div>
+					</li> -->
+				</ul>
 			</div>
-			<ul class="list-group" id="taskList">
-				<!-- Sample Task -->
-				<!-- <li class="list-group-item d-flex align-items-center justify-content-between">
-					<input type="checkbox" class="mr-2" />
-					<p class="taskName mb-0">Sample Task</p>
-					<div>
-						<button class="btn btn-warning btn-sm edit-button">Edit</button>
-						<button class="btn btn-danger btn-sm ml-2 delete-button">Delete</button>
-					</div>
-				</li> -->
-			</ul>
-		</div>
-    	<script src="script.js"></script>
-  	</body>
+        </div>
+        <script src="script.js"></script>
+    </body>
 </html>
