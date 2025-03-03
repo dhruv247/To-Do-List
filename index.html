@@ -8,6 +8,7 @@
     </head>
     <body class="h-100">
         <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+            <!-- Login Section -->
             <div class="border rounded p-4" id="loginSection">
                 <h1 class="text-center mb-2">To-Do List</h1>
                 <div class="d-flex flex-column">
@@ -18,7 +19,10 @@
             </div>
             <!-- To-Do List Section (Initially Hidden) -->			
 			<div id ="toDoSection" class="d-none">
-				<h1 class="text-center">To-Do List</h1>
+				<div class="d-flex justify-content-between align-items-center mb-4">
+					<h1 class="text-center mb-0">To-Do List</h1>
+					<button class="btn btn-danger" id="logoutBtn">Logout</button>
+				</div>
 				<div class="input-group mb-3">
 					<input type="text" id="taskInput" class="form-control" placeholder="Add a new task" aria-label="Task"/>
 					<button class="btn btn-primary ml-4" id="addTaskBtn">Add Task</button>
